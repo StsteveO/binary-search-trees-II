@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Binary Search Trees II</title>
+  </head>
+  <body>
+    <script>
+      const prettyPrint = (node, prefix = "", isLeft = true) => {
+        if (node === null) {
+          return;
+        }
+        if (node.right !== null) {
+          prettyPrint(
+            node.right,
+            `${prefix}${isLeft ? "│   " : "    "}`,
+            false
+          );
+        }
+        console.log(`${prefix}${isLeft ? "└── " : "┌── "}${node.info}`);
+        if (node.left !== null) {
+          prettyPrint(node.left, `${prefix}${isLeft ? "    " : "│   "}`, true);
+        }
+      };
+
+      class Number {
+        //this is the node we will use
+        constructor(info, left = null, right = null) {
+          (this.left = left), (this.right = right), (this.info = info);
+        }
+      }
+
+      function buildTree(arr) {
+        let filteredArr = []; //filter out repeating numbers
+        arr.forEach((item) => {
+          if (!filteredArr.includes(item)) {
+            filteredArr.push(item);
+          }
+        });
+        filteredArr.sort((a, b) => {
+          //order arr
+          return a - b;
+        });
+        // return filteredArr;
+        function makeTree(arr, start = 0, end = arr.length - 1) {
+          if (start > end) {
+            return null;
+          } else {
+            let middle = Math.round((end + start) / 2);
+            let info = new Number(arr[middle]);
+            info.left = makeTree(arr, start, middle - 1);
+            info.right = makeTree(arr, middle + 1, end);
+            return info;
+          }
+        }
+        return makeTree(filteredArr);
+      }
+
+      class Tree {
+        //this is the tree to kick things off
+        constructor(arr) {
+          this.root = buildTree(arr); //this is the root which will point to the L and R nodes
+        }
+        find(value) {
+          let p = this.root;
+          let pValue = this.root.info;
+          if (pValue === value) {
+            return p;
+          }
+          while (pValue !== value) {
+            if (value < pValue) {
+              p = p.left;
+              if (p === null) {
+                return "Number not found.";
+              }
+              pValue = p.info;
+              console.log(pValue);
+            } else if (value > pValue) {
+              p = p.right;
+              if (p === null) {
+                return "Number not found.";
+              }
+              pValue = p.info;
+              console.log(pValue);
+            }
+          }
+          if (pValue === value) {
+            return p;
+          }
+        }
+      }
+
+      let exampleTree = new Tree([10, 0, 0, 5, 6, 6, 90, 57, 92]);
+      console.log(exampleTree.root);
+      prettyPrint(exampleTree.root);
+      console.log(exampleTree.find(5));
+    </script>
+  </body>
+</html>
