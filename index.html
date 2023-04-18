@@ -63,6 +63,258 @@
         constructor(arr) {
           this.root = buildTree(arr); //this is the root which will point to the L and R nodes
         }
+        remove(value){ //60 and 210.
+          console.log("***********BEFORE AND AFTER*************");
+          //recursive fxn to do the work for us
+          let parent;
+          let tempNum;
+          function recursive(p,value){
+            if(!p){return "There is no tree."};
+            if(p.left){
+              if(p.left.info===value){
+              parent=p;
+              console.log(`Parent of ${value}= ${parent.info}`);
+              }
+            }
+            if(p.right){
+              if(p.right.info===value){
+                parent=p;
+                console.log(`Parent of ${value}= ${parent.info}`);
+              }
+            }
+            if(value<p.info){
+              if(p.left){
+                recursive(p.left,value);
+              }else if(!p.left){
+                console.log("Number not found");
+                return;
+            };
+            }
+            if(value>p.info){
+              if(p.right){
+                recursive(p.right,value);
+              }else if(!p.right){
+                console.log("Number not found");
+                return;
+              }
+            }
+            if(p.info===value){
+              if(!p.left && !p.right){
+                console.log(p);
+                if(parent.info<p.info){
+                  parent.right=null;
+                }
+                if(parent.info>p.info){
+                  parent.left=null;
+                }
+              }
+              if(p.left && !p.right){
+                p.info=p.left.info;
+                p.left=null;
+              };
+              if(!p.left && p.right){
+                p.info=p.right.info;
+                p.right=null;
+              };
+              if(p.left && p.right){
+                let tempNum=p.right;
+                if(tempNum.left===null){
+                  p.info=tempNum.info;
+                  p.right=null;
+                }
+                while(tempNum.left){
+                  tempNum=tempNum.left;
+                  // console.log(tempNum.info);
+                }
+                p.info=tempNum.info;
+                recursive(p.right,tempNum.info);
+              }
+            }
+          }
+          recursive(this.root, value);
+        }
+        make(value){
+          let newNum;
+          newNum= new Number(value);
+          let p=this.root;
+          while(p.info!==newNum.info){
+          if(newNum.info<p.info){
+            if(p.left){
+              p=p.left;
+            }else if(p.left===null){
+              p.left=newNum;
+              return;
+            }
+          }
+          if(newNum.info>p.info){
+            if(p.right){
+              p=p.right;
+            }else if(p.right===null){
+              p.right=newNum;
+              return;
+            }
+          }
+        }
+        if(newNum.info===p.info){
+          return "Number already in tree.";
+        }
+        }
+        postOrder(){
+          let arr=[];
+          function postOrderArr(root){
+            if(root.left){
+              postOrderArr(root.left);
+            }
+            if(root.right){
+              postOrderArr(root.right);
+            }
+            arr.push(root.info);
+            return arr;
+          }
+          let completedArr= postOrderArr(this.root);
+          return `Post-order array= ${completedArr}.`
+        }
+        preOrder(){
+          let arr=[];
+          function preOrderArr(root){
+            arr.push(root.info);
+            if(root.left){
+              preOrderArr(root.left);
+            }
+            if(root.right){
+              preOrderArr(root.right);
+            }
+            return arr;
+          }
+          let completedArr= preOrderArr(this.root);
+          return `Pre-order array= ${completedArr}.`
+        }
+        inOrder(){
+          let arr=[];
+          function inOrderArr(root){
+            if(root.left){
+              inOrderArr(root.left);
+            }
+            arr.push(root.info);
+            if(root.right){
+              inOrderArr(root.right);
+            }
+            return arr;
+          }
+          let completedArr= inOrderArr(this.root);
+          return `In order array= ${completedArr}.`
+        }
+        levelOrder(){
+          let c=0; //count
+          let q=[]; //queue
+          let arr=[];
+          let p= this.root; //pointer
+          q.push(p);
+          while(q.length>0){
+            let curr=q.shift();
+            arr.push(curr.info);
+            if(curr.left){
+              q.push(curr.left);
+            }
+            if(curr.right){
+              q.push(curr.right);
+            }
+          }
+          let far= arr[arr.length-1]; //last number
+          while(p.info!==far){
+            if(far<p.info){
+              p=p.left;
+              c++;
+            }
+            if(far>p.info){
+              p=p.right;
+              c++;
+            }
+          }
+          return `Total number of levels= ${c} levels.\n\nLevel order array= ${arr}.`;
+        }
+        height(value){
+          if(value===undefined){
+            return "Enter a number.";
+          }
+          if(!this.root){
+            return null;
+          }
+          let p=this.root;
+          while(value!==p.info){
+            if(value<p.info){
+              p=p.left;
+              if(p===null){
+                return "Number not found.";
+              }
+            }
+            if(value>p.info){
+              p=p.right;
+              if(p===null){
+                return "Number not found.";
+              }
+            }
+          }
+          let startingVal= p;
+          let q=[]; //queue
+          let arr=[];
+          let currentNum;
+          q.push(startingVal)
+          while(q.length>0){
+            currentNum= q.shift();
+            arr.push(currentNum.info);
+            if(currentNum.left){
+              q.push(currentNum.left);
+            }
+            if(currentNum.right){
+              q.push(currentNum.right);
+            }
+          }
+          let targetVal= arr[arr.length-1];
+          let c=0; //counter
+          while(startingVal.info!==targetVal){
+            if(targetVal<startingVal.info){
+              c++;
+              startingVal=startingVal.left;
+            }
+            if(targetVal>startingVal.info){
+              c++;
+              startingVal=startingVal.right;
+            }
+          }
+          return `Height value of ${value} is ${c}.`;
+        }
+        depth(value){
+          if(value===null || value===undefined){
+            return "Please enter a number."
+          }
+          let c=0; //counter
+          let p=this.root;
+          let pValue=this.root.info;
+          if(pValue===value){
+            return `Depth value of ${pValue} is ${c}.`;
+          }
+          while(pValue!==value){
+            if (value<pValue){
+              p=p.left;
+              if(p===null){
+                return "Number not found.";
+              }
+              pValue=p.info;
+              c++;
+            }else if(value>pValue){
+              p=p.right;
+              if(p===null){
+                return "Number not found."
+              }
+              pValue= p.info;
+              c++;
+            }
+          }
+          if(pValue===value){
+            return `Depth value of ${pValue} is ${c}.`;
+          }
+        }
         find(value) {
           let p = this.root;
           let pValue = this.root.info;
@@ -76,14 +328,14 @@
                 return "Number not found.";
               }
               pValue = p.info;
-              console.log(pValue);
+              // console.log(pValue);
             } else if (value > pValue) {
               p = p.right;
               if (p === null) {
                 return "Number not found.";
               }
               pValue = p.info;
-              console.log(pValue);
+              // console.log(pValue);
             }
           }
           if (pValue === value) {
@@ -92,10 +344,28 @@
         }
       }
 
-      let exampleTree = new Tree([10, 0, 0, 5, 6, 6, 90, 57, 92]);
-      console.log(exampleTree.root);
+      let exampleTree = new Tree([10, 93, 0, 0, 5, 6, 6, 90, 57, 92, 40, 57, 60, 56, 90, 80, 100, 150, 200, 210]);
+      // console.log(exampleTree.root);
       prettyPrint(exampleTree.root);
-      console.log(exampleTree.find(5));
+      // console.log(exampleTree.find(5));
+      // console.log(exampleTree.depth(57));
+      // console.log(exampleTree.height(57));
+      // console.log(exampleTree.levelOrder());
+      // console.log(exampleTree.inOrder());
+      // console.log(exampleTree.preOrder());
+      // console.log(exampleTree.postOrder());
+      // console.log(exampleTree.make(400));
+      // console.log(exampleTree.make(-1));
+      // console.log(exampleTree.make(7));
+      // console.log(exampleTree.make(-4));
+      // (exampleTree.remove(60));
+      // (exampleTree.remove(210));
+      // (exampleTree.remove(94));
+      // (exampleTree.remove(5));
+      // (exampleTree.remove(57));
+      // (exampleTree.remove(80));
+      prettyPrint(exampleTree.root);
+
     </script>
   </body>
 </html>
