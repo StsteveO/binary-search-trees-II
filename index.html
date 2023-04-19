@@ -63,6 +63,76 @@
         constructor(arr) {
           this.root = buildTree(arr); //this is the root which will point to the L and R nodes
         }
+        reBal(){
+          let arr=[];
+          function inOrderArr(p){
+            if(p.left){
+              inOrderArr(p.left);
+            }
+            arr.push(p.info);
+            if(p.right){
+              inOrderArr(p.right);
+            }
+            return arr;
+          }
+          let newArr= inOrderArr(this.root);
+          this.root=buildTree(newArr);
+          return this.root;
+        }
+        isBal(){
+          let p=this.root;
+          let q=[];
+          let arr=[];
+          q.push(p);
+          while(q.length>0){
+            if(q[0].left===null || q[0].right===null){
+              arr.push(q[0].info);
+            }
+            if(q[0].left){
+              q.push(q[0].left);
+            }
+            if(q[0].right){
+              q.push(q[0].right);
+            }
+            q.shift();
+          }
+          // return arr;
+          let minHeight;
+          let maxHeight;
+          function rawDepth(value,p){
+            let c=0;
+            while(p.info!==value){
+              if(value<p.info){
+                c++;
+                p=p.left;
+              }
+              if(value>p.info){
+                c++;
+                p=p.right;
+              }
+            }
+            return c
+          }; 
+
+          minHeight= rawDepth(arr[0], this.root);
+          maxHeight= rawDepth(arr[arr.length-1], this.root);
+
+          // return `Min-height= ${minHeight}, and max-height= ${maxHeight}.`
+
+          if((maxHeight-minHeight)>1){
+            return "False, tree is unbalanced.";
+          }else{
+            return "True, tree is balanced.";
+          };
+          //psudocode:
+          //traverse the graph via q//
+          //push parents with single children into arr//
+          //arr[0] is min height
+          //arr[arr.length-1] is max height
+          //find depth of min and max height
+          //if min and max differ by >1= false
+          //...else true
+        }
         remove(value){ //60 and 210.
           console.log("***********BEFORE AND AFTER*************");
           //recursive fxn to do the work for us
@@ -345,27 +415,27 @@
       }
 
       let exampleTree = new Tree([10, 93, 0, 0, 5, 6, 6, 90, 57, 92, 40, 57, 60, 56, 90, 80, 100, 150, 200, 210]);
-      // console.log(exampleTree.root);
-      prettyPrint(exampleTree.root);
-      // console.log(exampleTree.find(5));
-      // console.log(exampleTree.depth(57));
-      // console.log(exampleTree.height(57));
-      // console.log(exampleTree.levelOrder());
-      // console.log(exampleTree.inOrder());
-      // console.log(exampleTree.preOrder());
-      // console.log(exampleTree.postOrder());
-      // console.log(exampleTree.make(400));
-      // console.log(exampleTree.make(-1));
-      // console.log(exampleTree.make(7));
-      // console.log(exampleTree.make(-4));
-      // (exampleTree.remove(60));
-      // (exampleTree.remove(210));
-      // (exampleTree.remove(94));
-      // (exampleTree.remove(5));
-      // (exampleTree.remove(57));
-      // (exampleTree.remove(80));
-      prettyPrint(exampleTree.root);
-
+      let driverScript= new Tree([1,5,2,2,4,7,8,9,3,6,7,11,24,35,67,89,34]);
+      prettyPrint(driverScript.root);
+      console.log(driverScript.isBal());
+      console.log(driverScript.levelOrder());
+      console.log(driverScript.preOrder());
+      console.log(driverScript.inOrder());
+      console.log(driverScript.postOrder());
+      driverScript.make(100);
+      driverScript.make(105);
+      driverScript.make(140);
+      driverScript.make(136);
+      driverScript.make(150);
+      prettyPrint(driverScript.root);
+      console.log(driverScript.isBal());
+      driverScript.reBal();
+      prettyPrint(driverScript.root);
+      console.log(driverScript.isBal());
+      console.log(driverScript.levelOrder());
+      console.log(driverScript.preOrder());
+      console.log(driverScript.inOrder());
+      console.log(driverScript.postOrder());
     </script>
   </body>
 </html>
